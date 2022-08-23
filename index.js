@@ -10,20 +10,24 @@ const privateKey = '0x5d8972a5476e5763900f56b8221bc2d6807e10bd6abd15b0e8b2047263
 const init = async () => {
     const provider = new HDWalletProvider(
         privateKey,
-        'http://127.0.0.1:8545'
+        'https://ropsten.infura.io/v3/35c9eac08b5f44eda6e6bd20f9b12bd4'        
     );
 
     const web3 = new Web3(provider);
  
-    const id = await web3.eth.net.getId();
+    // const id = await web3.eth.net.getId();
     
-    const deployedNetwork = MyContract.networks[id];
+    // const deployedNetwork = MyContract.networks[id];
     
-    const contract = new web3.eth.Contract(
-        MyContract.abi,
-        deployedNetwork.address
+    let contract = new web3.eth.Contract(
+        MyContract.abi
+        // deployedNetwork.address
     );
     
+    contract = await contract
+        .deploy({data: MyContract.bytecode})
+        .send({from: address});
+
     // const addresses = await web3.eth.getAccounts();
 
     await contract.methods
@@ -38,6 +42,8 @@ const init = async () => {
 
 
     console.log(result);
+
+    console.log(contract.options.address);
 } 
 
 init();
